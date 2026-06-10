@@ -1,0 +1,98 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Moderator Customer Chat Desk</h2>
+        <p>Maintain live connection logs and chat assistance for Makao brokers and clients</p>
+    </div>
+</div>
+
+<div class="glass-panel support-chat-container">
+    
+    <!-- Sidebar: Customer tickets queue -->
+    <div class="chat-users-list">
+        <div style="padding: 16px; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 13px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+            Active Client Chats
+        </div>
+        
+        <% if (chatUsers.length === 0) { %>
+            <div style="padding: 30px; text-align: center; color: var(--color-text-muted); font-size: 13px;">
+                <i class="fas fa-comments fa-2x" style="margin-bottom: 10px;"></i>
+                <p>No active chats found.</p>
+            </div>
+        <% } else { %>
+            <% chatUsers.forEach(chatUser => { %>
+                <div class="chat-user-item <%= (selectedUser && selectedUser.id === chatUser.id) ? 'active' : '' %>" 
+                     onclick="window.location.href='/staff/messages/chat/<%= chatUser.id %>'">
+                    <div class="chat-user-avatar">
+                        <%= chatUser.full_name.charAt(0) %>
+                    </div>
+                    <div class="chat-user-details">
+                        <h4><%= chatUser.full_name %></h4>
+                        <p style="text-transform: capitalize;"><%= chatUser.role %> | <%= chatUser.phone_number %></p>
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+
+    <!-- Active Chat Window on Right -->
+    <div class="chat-window">
+        <% if (selectedUser) { %>
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="chat-user-avatar">
+                    <%= selectedUser.full_name.charAt(0) %>
+                </div>
+                <div>
+                    <h3 style="font-size: 15px;"><%= selectedUser.full_name %></h3>
+                    <span style="font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase;">
+                        <%= selectedUser.role %> | Chat Ticket Logs
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Messages stream -->
+            <div class="chat-messages-area">
+                <% if (chatMessages.length === 0) { %>
+                    <div style="text-align: center; margin: auto; color: var(--color-text-muted); font-size: 13px;">
+                        <p>No messages in this support conversation yet.</p>
+                        <p style="margin-top: 4px;">Type a message below to assist the client.</p>
+                    </div>
+                <% } else { %>
+                    <% chatMessages.forEach(msg => { %>
+                        <div class="chat-bubble <%= msg.sender_id === user.id ? 'sent' : 'received' %>">
+                            <%= msg.message %>
+                            <span class="chat-time">
+                                <%= new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+                            </span>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+            
+            <!-- Message reply text box -->
+            <div class="chat-input-area">
+                <form action="/staff/messages/send" method="POST" class="chat-input-form">
+                    <input type="hidden" name="receiver_id" value="<%= selectedUser.id %>" />
+                    <input type="text" name="message" class="form-control" placeholder="Type reply here..." required autocomplete="off" />
+                    <button type="submit" class="btn btn-primary" style="padding: 10px 24px;">
+                        Send <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        <% } else { %>
+            <!-- If no active chat selected -->
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto; text-align: center; padding: 40px; color: var(--color-text-muted);">
+                <i class="fas fa-comments fa-4x" style="margin-bottom: 20px; color: var(--border-color);"></i>
+                <h3>Moderator Chat Desk</h3>
+                <p style="color: var(--color-text-secondary); max-width: 400px; margin-top: 8px;">
+                    Select a client requesting help from the active sidebar queue to start answering questions.
+                </p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

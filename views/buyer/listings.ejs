@@ -1,0 +1,129 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>My Saved & Connected Properties</h2>
+        <p>Review properties you liked, saved, or successfully unlocked details for</p>
+    </div>
+</div>
+
+<!-- 1. Connected/Unlocked properties Section -->
+<div class="glass-panel" style="padding: 30px; margin-bottom: 40px;">
+    <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        <i class="fas fa-lock-open" style="margin-right: 8px; color: var(--color-success);"></i>Connected Properties (Seller Details Unlocked)
+    </h3>
+    
+    <% if (connections.length === 0) { %>
+        <div style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+            <i class="fas fa-key fa-2x" style="margin-bottom: 10px;"></i>
+            <p>You haven't unlocked any property contact details yet.</p>
+            <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">Explore houses in the dashboard and pay the 10% connection fee to connect.</p>
+        </div>
+    <% } else { %>
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            <% connections.forEach(unlocked => { %>
+                <div class="glass-panel" style="background: var(--bg-surface); padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: start;">
+                    
+                    <div style="height: 140px; border-radius: var(--border-radius-sm); overflow: hidden; background: #cbd5e1;">
+                        <img src="<%= unlocked.images %>" alt="<%= unlocked.listing_title %>" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80'" />
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h4 style="font-size: 16px; margin-bottom: 6px;"><%= unlocked.listing_title %></h4>
+                                <span style="font-size: 16px; font-weight: 800; color: var(--color-primary);">KES <%= parseFloat(unlocked.price).toLocaleString() %></span>
+                            </div>
+                            <p style="font-size: 12.5px; color: var(--color-text-secondary); margin-bottom: 12px;"><%= unlocked.description %></p>
+                            
+                            <!-- Homeowner unlocked credentials -->
+                            <div class="glass-panel" style="background: var(--color-primary-light); padding: 14px; border-radius: var(--border-radius-sm); border-color: var(--color-primary); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                                <div>
+                                    <span style="font-size: 10px; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700;">Seller Name</span>
+                                    <div style="font-size: 14px; font-weight: 700;"><%= unlocked.owner_name %></div>
+                                </div>
+                                <div>
+                                    <span style="font-size: 10px; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700;">Phone Sign-Up Number</span>
+                                    <div style="font-size: 14px; font-weight: 700; color: var(--color-primary);"><%= unlocked.owner_phone %></div>
+                                </div>
+                                <div>
+                                    <span style="font-size: 10px; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700;">Email Address</span>
+                                    <div style="font-size: 13px; font-weight: 600;"><%= unlocked.owner_email || 'Not configured' %></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                            <span style="font-size: 11px; color: var(--color-text-muted);"><i class="fas fa-check-double text-success"></i> Details approved & unlocked</span>
+                            
+                            <% 
+                                let dealText = `Hello Makao Realtors! Direct connection verified for property "${unlocked.listing_title}". Please connect me with Seller ${unlocked.owner_name} (${unlocked.owner_phone}) to finalize my purchase.`;
+                                let encodedMsg = encodeURIComponent(dealText);
+                            %>
+                            <a href="https://wa.me/25115481162?text=<%= encodedMsg %>" target="_blank" class="btn btn-success btn-sm" style="background-color: #25d366; border-color: #25d366;">
+                                <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                    
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>
+
+<!-- 2. Liked and Saved properties Section -->
+<div class="glass-panel" style="padding: 30px;">
+    <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        <i class="fas fa-heart" style="margin-right: 8px; color: var(--color-danger);"></i>Bookmarks and Liked Properties
+    </h3>
+    
+    <% if (savedListings.length === 0) { %>
+        <div style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+            <i class="far fa-heart fa-2x" style="margin-bottom: 10px;"></i>
+            <p>You haven't liked or saved any properties yet.</p>
+        </div>
+    <% } else { %>
+        <div class="table-wrapper">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Property Title</th>
+                        <th>Price</th>
+                        <th>Submitted By</th>
+                        <th>Interaction Type</th>
+                        <th>Availability</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% savedListings.forEach(save => { %>
+                        <tr>
+                            <td><strong><%= save.title %></strong></td>
+                            <td>KES <%= parseFloat(save.price).toLocaleString() %></td>
+                            <td><%= save.owner_name %></td>
+                            <td>
+                                <span class="badge <%= save.interaction_type === 'like' ? 'badge-danger' : 'badge-warning' %>">
+                                    <i class="fas <%= save.interaction_type === 'like' ? 'fa-heart' : 'fa-bookmark' %>" style="margin-right: 4px;"></i><%= save.interaction_type %>d
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge <%= save.availability === 'available' ? 'badge-success' : 'badge-danger' %>">
+                                    <%= save.availability %>
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <a href="/buyer/dashboard" class="btn btn-primary btn-sm" style="padding: 4px 10px;">
+                                    View Details
+                                </a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

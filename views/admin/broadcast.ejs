@@ -1,0 +1,89 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>System Announcements</h2>
+        <p>Send broadcast alerts to specific user roles or all registered platform members</p>
+    </div>
+    <a href="/admin/dashboard" class="btn btn-secondary btn-sm">
+        <i class="fas fa-arrow-left"></i> Back to Control Center
+    </a>
+</div>
+
+<% if (success) { %>
+    <div class="alert alert-success slide-in-up" style="margin-bottom: 24px;">
+        <span><i class="fas fa-check-circle" style="margin-right: 6px;"></i><%= success %></span>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+<% } %>
+
+<div class="dashboard-grid" style="grid-template-columns: 1.2fr 1.8fr; align-items: start;">
+    
+    <!-- Left Column: New Announcement Form -->
+    <div class="glass-panel" style="padding: 30px;">
+        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+            <i class="fas fa-bullhorn" style="color: var(--color-primary); margin-right: 8px;"></i>Draft Announcement
+        </h3>
+        
+        <form action="/admin/broadcast" method="POST">
+            <div class="form-group">
+                <label for="target_role" class="form-label">Recipient Demographic</label>
+                <select id="target_role" name="target_role" class="form-control" required>
+                    <option value="all">All Platform Users (Everyone)</option>
+                    <option value="landlord">Landlords Only</option>
+                    <option value="seller">Sellers Only</option>
+                    <option value="renter">Renters Only</option>
+                    <option value="buyer">Buyers Only</option>
+                    <option value="staff">Support Staff Only</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="title" class="form-label">Subject Title</label>
+                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. M-Pesa Scheduled Downtime Notice" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="message" class="form-label">Message Content</label>
+                <textarea id="message" name="message" class="form-control" rows="5" placeholder="Write message details here..." required style="resize: none;"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Broadcast Announcement <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Right Column: Broadcast Alerts log -->
+    <div class="glass-panel" style="padding: 30px;">
+        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+            <i class="fas fa-history" style="color: var(--color-secondary); margin-right: 8px;"></i>Broadcast Dispatch Log
+        </h3>
+        
+        <% if (broadcasts.length === 0) { %>
+            <div style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+                <i class="fas fa-info-circle fa-2x" style="margin-bottom: 10px;"></i>
+                <p>No announcements have been broadcasted yet.</p>
+            </div>
+        <% } else { %>
+            <div style="display: flex; flex-direction: column; gap: 16px; max-height: 520px; overflow-y: auto;">
+                <% broadcasts.forEach(notice => { %>
+                    <div class="broadcast-card glass-panel" style="border-left: 5px solid var(--color-primary); background: var(--bg-surface); padding: 16px;">
+                        <div class="broadcast-meta">
+                            <span>To: <strong style="text-transform: uppercase;"><%= notice.target_role %></strong></span>
+                            <span><%= new Date(notice.created_at).toLocaleString() %></span>
+                        </div>
+                        <h4 style="font-size: 15px; margin-bottom: 8px; color: var(--color-text-primary);"><%= notice.title %></h4>
+                        <p style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5;"><%= notice.message %></p>
+                        <div style="margin-top: 10px; font-size: 10px; color: var(--color-text-muted); text-align: right;">
+                            Broadcasted by: <strong><%= notice.sender_name %></strong>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

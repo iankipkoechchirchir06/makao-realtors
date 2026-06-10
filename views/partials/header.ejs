@@ -1,0 +1,244 @@
+<%
+// Define dynamic navigation link arrays for each of the 6 roles
+let navLinks = [];
+let bottomNavLinks = []; // Mobile bottom bar quick links (max 4)
+
+if (user) {
+    if (user.role === 'admin') {
+        navLinks = [
+            { href: '/admin/dashboard', label: 'Control Center', icon: 'fa-chart-pie' },
+            { href: '/admin/users', label: 'Manage Users', icon: 'fa-users-cog' },
+            { href: '/admin/listings', label: 'Properties Audit', icon: 'fa-home' },
+            { href: '/admin/broadcast', label: 'Broadcasts', icon: 'fa-bullhorn' },
+            { href: '/admin/messages', label: 'Support Chats', icon: 'fa-comments' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+        bottomNavLinks = [
+            { href: '/admin/dashboard', label: 'Home', icon: 'fa-chart-pie' },
+            { href: '/admin/users', label: 'Users', icon: 'fa-users-cog' },
+            { href: '/admin/messages', label: 'Chats', icon: 'fa-comments' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+    } else if (user.role === 'staff') {
+        navLinks = [
+            { href: '/staff/dashboard', label: 'Dashboard', icon: 'fa-tachometer-alt' },
+            { href: '/staff/payments', label: 'Verify Payments', icon: 'fa-file-invoice-dollar' },
+            { href: '/staff/connections', label: 'Connect Users', icon: 'fa-link' },
+            { href: '/staff/notifications', label: 'Alerts', icon: 'fa-bell' },
+            { href: '/staff/messages', label: 'Support Chats', icon: 'fa-comments' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+        bottomNavLinks = [
+            { href: '/staff/dashboard', label: 'Home', icon: 'fa-tachometer-alt' },
+            { href: '/staff/payments', label: 'Payments', icon: 'fa-file-invoice-dollar' },
+            { href: '/staff/messages', label: 'Support', icon: 'fa-comments' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+    } else if (user.role === 'landlord') {
+        navLinks = [
+            { href: '/landlord/dashboard', label: 'My Apartments', icon: 'fa-building' },
+            { href: '/landlord/create', label: 'Create Listing', icon: 'fa-plus-circle' },
+            { href: '/landlord/payments', label: 'Payments Log', icon: 'fa-receipt' },
+            { href: '/landlord/notifications', label: 'Alerts', icon: 'fa-bell' },
+            { href: '/landlord/support', label: 'Chat Support', icon: 'fa-headset' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+        bottomNavLinks = [
+            { href: '/landlord/dashboard', label: 'Apartments', icon: 'fa-building' },
+            { href: '/landlord/create', label: 'List House', icon: 'fa-plus-circle' },
+            { href: '/landlord/support', label: 'Support', icon: 'fa-headset' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+    } else if (user.role === 'seller') {
+        navLinks = [
+            { href: '/seller/dashboard', label: 'My Listings', icon: 'fa-home' },
+            { href: '/seller/create', label: 'Create Listing', icon: 'fa-plus-circle' },
+            { href: '/seller/payments', label: 'Payments Log', icon: 'fa-receipt' },
+            { href: '/seller/notifications', label: 'Alerts', icon: 'fa-bell' },
+            { href: '/seller/support', label: 'Chat Support', icon: 'fa-headset' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+        bottomNavLinks = [
+            { href: '/seller/dashboard', label: 'Listings', icon: 'fa-home' },
+            { href: '/seller/create', label: 'List House', icon: 'fa-plus-circle' },
+            { href: '/seller/support', label: 'Support', icon: 'fa-headset' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+    } else if (user.role === 'buyer') {
+        navLinks = [
+            { href: '/buyer/dashboard', label: 'Browse Houses', icon: 'fa-search' },
+            { href: '/buyer/listings', label: 'Saved/Connected', icon: 'fa-heart' },
+            { href: '/buyer/payments', label: 'Payments Log', icon: 'fa-receipt' },
+            { href: '/buyer/notifications', label: 'Alerts', icon: 'fa-bell' },
+            { href: '/buyer/support', label: 'Help Desk', icon: 'fa-headset' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+        bottomNavLinks = [
+            { href: '/buyer/dashboard', label: 'Browse', icon: 'fa-search' },
+            { href: '/buyer/listings', label: 'Saved', icon: 'fa-heart' },
+            { href: '/buyer/support', label: 'Help', icon: 'fa-headset' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+    } else if (user.role === 'renter') {
+        navLinks = [
+            { href: '/renter/dashboard', label: 'Browse Rentals', icon: 'fa-search' },
+            { href: '/renter/listings', label: 'Saved/Connected', icon: 'fa-heart' },
+            { href: '/renter/payments', label: 'Payments Log', icon: 'fa-receipt' },
+            { href: '/renter/notifications', label: 'Alerts', icon: 'fa-bell' },
+            { href: '/renter/support', label: 'Help Desk', icon: 'fa-headset' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+        bottomNavLinks = [
+            { href: '/renter/dashboard', label: 'Browse', icon: 'fa-search' },
+            { href: '/renter/listings', label: 'Saved', icon: 'fa-heart' },
+            { href: '/renter/support', label: 'Help', icon: 'fa-headset' },
+            { href: '/settings/profile', label: 'Settings', icon: 'fa-cog' }
+        ];
+    }
+} else {
+    // Unauthenticated public users links
+    navLinks = [
+        { href: '/', label: 'Home Browse', icon: 'fa-home' },
+        { href: '/login', label: 'Log In', icon: 'fa-sign-in-alt' },
+        { href: '/signup', label: 'Register Sign Up', icon: 'fa-user-plus' }
+    ];
+}
+%>
+
+<div class="app-wrapper">
+
+    <!-- 1. DESKTOP VIEWPORT LAYOUT SIDEBAR (> 1200px) -->
+    <% if (user) { %>
+        <aside class="desktop-sidebar">
+            <div class="sidebar-logo-section">
+                <a href="/">
+                    <img src="/images/logo.svg" alt="Makao Realtors Logo" style="height: 48px;" />
+                </a>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <% navLinks.forEach(link => { %>
+                    <li class="sidebar-nav-item">
+                        <a href="<%= link.href %>">
+                            <i class="fas <%= link.icon %>"></i>
+                            <span><%= link.label %></span>
+                        </a>
+                    </li>
+                <% }) %>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-pill glass-panel" style="padding: 10px 14px; display: flex; align-items: center; gap: 10px; font-size: 13px;">
+                    <div class="avatar" style="background: var(--color-primary); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                        <%= user.full_name.charAt(0) %>
+                    </div>
+                    <div style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <div style="font-weight: 700;"><%= user.full_name %></div>
+                        <div style="font-size: 10px; color: var(--color-text-secondary); text-transform: uppercase;"><%= user.role %></div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="theme-toggle" style="width: 100%;">
+                    <i class="fas fa-moon"></i> Toggle Theme
+                </button>
+                <a href="/logout" class="btn btn-danger btn-sm" style="text-align: center;">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </a>
+            </div>
+        </aside>
+    <% } %>
+
+    <!-- 2. LAPTOP & TABLET VIEWPORT HEADER LAYOUT (768px - 1200px) -->
+    <header class="laptop-tablet-header">
+        <div class="header-logo">
+            <a href="/">
+                <img src="/images/logo.svg" alt="Makao Logo" style="height: 38px;" />
+            </a>
+        </div>
+        
+        <ul class="header-nav">
+            <% navLinks.forEach(link => { %>
+                <li class="header-nav-item">
+                    <a href="<%= link.href %>">
+                        <i class="fas <%= link.icon %>" style="margin-right: 6px;"></i><%= link.label %>
+                    </a>
+                </li>
+            <% }) %>
+        </ul>
+        
+        <div class="header-actions">
+            <a href="https://wa.me/254115481162" target="_blank" class="btn btn-secondary btn-sm" title="WhatsApp Support">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <% if (user) { %>
+                <div class="user-header-profile" style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 13px; font-weight: 600;"><%= user.full_name %></span>
+                    <a href="/logout" class="btn btn-danger btn-sm" style="padding: 6px 12px;">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+            <% } else { %>
+                <a href="/login" class="btn btn-secondary btn-sm">Log In</a>
+                <a href="/signup" class="btn btn-primary btn-sm">Sign Up</a>
+            <% } %>
+        </div>
+    </header>
+
+    <!-- 3. MOBILE VIEWPORT FLOAT BANNER LAYOUT (< 768px) -->
+    <header class="mobile-top-bar">
+        <div class="header-logo">
+            <a href="/">
+                <img src="/images/logo.svg" alt="Makao Logo" style="height: 30px;" />
+            </a>
+        </div>
+        
+        <!-- Toggle Menu Trigger (Changes to Cross on click) -->
+        <button type="button" id="hamburger-btn">
+            <span class="hamburger-icon">&#9776;</span>
+        </button>
+    </header>
+
+    <!-- Slide-out Drawer Mobile Panel -->
+    <nav id="mobile-menu">
+        <ul class="mobile-menu-links">
+            <% navLinks.forEach(link => { %>
+                <li>
+                    <a href="<%= link.href %>">
+                        <i class="fas <%= link.icon %>"></i>
+                        <span><%= link.label %></span>
+                    </a>
+                </li>
+            <% }) %>
+        </ul>
+        
+        <div class="mobile-menu-footer">
+            <a href="https://wa.me/254115481162" target="_blank" class="btn btn-secondary btn-sm" style="width: 100%;">
+                <i class="fab fa-whatsapp"></i> WhatsApp Support
+            </a>
+            <% if (user) { %>
+                <div style="font-size: 13px;">
+                    Logged in as <strong><%= user.full_name %></strong> (<%= user.role %>)
+                </div>
+                <a href="/logout" class="btn btn-danger btn-sm" style="width: 100%;">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </a>
+            <% } else { %>
+                <a href="/login" class="btn btn-secondary btn-sm" style="width: 100%;">Log In</a>
+                <a href="/signup" class="btn btn-primary btn-sm" style="width: 100%;">Sign Up</a>
+            <% } %>
+        </div>
+    </nav>
+
+    <!-- Mobile Bottom App Bar Navigation -->
+    <% if (user) { %>
+        <nav class="mobile-bottom-nav">
+            <% bottomNavLinks.forEach(link => { %>
+                <a href="<%= link.href %>" class="mobile-bottom-nav-item">
+                    <i class="fas <%= link.icon %>"></i>
+                    <span><%= link.label.split(' ')[0] %></span>
+                </a>
+            <% }) %>
+        </nav>
+    <% } %>
+
+    <!-- Unified Dashboard Page Content Space -->
+    <main class="app-main-content">

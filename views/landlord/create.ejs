@@ -1,0 +1,81 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Submit Apartment Listing</h2>
+        <p>Register your rental building. Fill in pricing, amenities, and room details</p>
+    </div>
+    <a href="/landlord/dashboard" class="btn btn-secondary btn-sm">
+        <i class="fas fa-arrow-left"></i> Cancel and Go Back
+    </a>
+</div>
+
+<% if (error) { %>
+    <div class="alert alert-danger slide-in-up" style="margin-bottom: 24px;">
+        <span><i class="fas fa-exclamation-circle" style="margin-right: 6px;"></i><%= error %></span>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+<% } %>
+
+<div class="glass-panel" style="padding: 40px; max-width: 800px; margin: 0 auto;">
+    <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        <i class="fas fa-plus-circle" style="color: var(--color-primary); margin-right: 8px;"></i>Property Information Form
+    </h3>
+    
+    <form action="/landlord/create" method="POST">
+        <div class="form-group">
+            <label for="title" class="form-label">Apartment Title Name</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Kilimani Heights Annex" required />
+        </div>
+        
+        <div class="form-group">
+            <label for="description" class="form-label">Detailed Description</label>
+            <textarea id="description" name="description" class="form-control" rows="4" placeholder="Mention nearby landmarks, water availability, electricity setup, etc..." required style="resize: none;"></textarea>
+        </div>
+        
+        <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
+            <div class="form-group">
+                <label for="price" class="form-label">Base Rent Price per Month (KES)</label>
+                <input type="number" id="price" name="price" class="form-control" min="1" placeholder="e.g. 15000" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="amenities" class="form-label">Key Amenities (Comma Separated)</label>
+                <input type="text" id="amenities" name="amenities" class="form-control" placeholder="e.g. Parking, Wi-Fi, Security, Backup Generator" required />
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 10px; margin-bottom: 24px;">
+            <label class="form-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <input type="checkbox" id="has_multiple_rooms" name="has_multiple_rooms" style="width: 18px; height: 18px; accent-color: var(--color-primary);" />
+                <span>This property has multiple rooms (Multi-unit Apartment)</span>
+            </label>
+        </div>
+
+        <!-- Dynamic sub-rooms container (Revealed via JS when checkbox is checked) -->
+        <div id="rooms-section-wrapper" class="glass-panel" style="display: none; padding: 24px; background: var(--bg-base); margin-bottom: 24px; border-radius: var(--border-radius-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                <h4 style="font-size: 14px; font-weight: 700;"><i class="fas fa-door-open" style="margin-right: 6px;"></i>Room Configurations</h4>
+                <button type="button" class="btn btn-secondary btn-sm" id="add-room-field-btn">
+                    <i class="fas fa-plus"></i> Add Room Row
+                </button>
+            </div>
+            
+            <div id="rooms-fields-list">
+                <!-- Javascript will inject room inputs here -->
+            </div>
+            <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 10px;">
+                Providing room breakdowns allows renters to choose and reduction prices for advertised rooms.
+            </p>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); padding-top: 20px; text-align: right;">
+            <button type="submit" class="btn btn-primary" style="padding: 12px 30px;">
+                Submit and Proceed to Payment <i class="fas fa-check-circle"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

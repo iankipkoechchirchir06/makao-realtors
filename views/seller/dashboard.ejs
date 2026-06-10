@@ -1,0 +1,114 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>My Houses Dashboard</h2>
+        <p>Manage your properties for sale, toggle availability, and track M-Pesa listing fees</p>
+    </div>
+    <a href="/seller/create" class="btn btn-primary btn-sm">
+        <i class="fas fa-plus-circle"></i> Submit New House
+    </a>
+</div>
+
+<!-- Grid listing properties -->
+<% if (listings.length === 0) { %>
+    <div class="glass-panel" style="padding: 60px; text-align: center; border-radius: var(--border-radius-md);">
+        <i class="fas fa-home fa-3x" style="color: var(--color-text-muted); margin-bottom: 16px;"></i>
+        <h3>No Properties Registered Yet</h3>
+        <p style="color: var(--color-text-secondary); margin-top: 8px;">Click "Submit New House" above to create your first house listing for sale.</p>
+        <a href="/seller/create" class="btn btn-primary" style="margin-top: 20px;">Get Started</a>
+    </div>
+<% } else { %>
+    <div class="properties-grid">
+        <% listings.forEach(property => { %>
+            <div class="property-card glass-panel" style="display: flex; flex-direction: column;">
+                <div class="property-img-container">
+                    <img src="<%= property.images %>" alt="<%= property.title %>" onerror="this.src='https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80'" />
+                    <span class="property-badge">
+                        <%= property.property_type %>
+                    </span>
+                    <span class="property-availability <%= property.availability === 'taken' ? 'taken' : '' %>">
+                        <%= property.availability === 'taken' ? 'taken' : 'available' %>
+                    </span>
+                </div>
+                
+                <div class="property-details" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <!-- Listing fee status badge -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span class="property-price">KES <%= parseFloat(property.price).toLocaleString() %></span>
+                            
+                            <% if (property.payment_status === 'approved') { %>
+                                <span class="badge badge-success"><i class="fas fa-check-circle"></i> Listing Approved</span>
+                            <% } else if (property.payment_status === 'pending') { %>
+                                <span class="badge badge-pending"><i class="fas fa-clock"></i> Pending Staff Audit</span>
+                            <% } else { %>
+                                <span class="badge badge-danger"><i class="fas fa-exclamation-triangle"></i> Unpaid Fee</span>
+                            <% } %>
+                        </div>
+                        
+                        <h3 class="property-title"><%= property.title %></h3>
+                        <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 15px;"><%= property.description %></p>
+                        
+                        <% if (property.amenities) { %>
+                            <div class="property-amenities" style="margin-bottom: 15px;">
+                                <% property.amenities.split(',').forEach(tag => { %>
+                                    <span class="amenity-tag"><%= tag.trim() %></span>
+                                <% }) %>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <div style="border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 15px;">
+                        <!-- Case 1: Unpaid listing fee. Prompt KES 100 M-Pesa checkout -->
+                        <% if (property.payment_status === 'unpaid' || property.payment_status === 'rejected') { %>
+                            <div class="glass-panel" style="background: var(--color-primary-light); border-color: var(--color-primary); padding: 12px; border-radius: var(--border-radius-sm);">
+                                <h4 style="font-size: 13px; color: var(--color-primary); margin-bottom: 8px; font-weight: 700;">
+                                    <i class="fas fa-wallet"></i> KES 100 Listing Fee Required
+                                </h4>
+                                <p style="font-size: 11px; color: var(--color-text-secondary); margin-bottom: 10px;">
+                                    Pay listing fee securely via M-Pesa STK to publish this house.
+                                </p>
+                                
+                                <form class="mpesa-checkout-trigger-form">
+                                    <input type="hidden" name="amount" value="100" />
+                                    <input type="hidden" name="payment_type" value="listing_fee" />
+                                    <input type="hidden" name="listing_id" value="<%= property.id %>" />
+                                    
+                                    <div style="display: flex; gap: 8px;">
+                                        <input type="text" name="phone_number" class="form-control form-control-sm" placeholder="Safaricom e.g. 0712345678" style="padding: 6px; font-size: 12px;" value="<%= user.phone_number %>" required />
+                                        <button type="submit" class="btn btn-primary btn-sm" style="padding: 6px 10px; font-size: 11px; white-space: nowrap;">
+                                            Pay KES 100
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                        <!-- Case 2: Listing is approved. Seller can change availability between available and taken -->
+                        <% } else if (property.payment_status === 'approved') { %>
+                            <form action="/seller/listings/availability" method="POST" style="display: flex; justify-content: space-between; align-items: center;">
+                                <input type="hidden" name="listing_id" value="<%= property.id %>" />
+                                <span style="font-size: 12px; font-weight: 600; color: var(--color-text-secondary);">Set Status:</span>
+                                
+                                <div style="display: flex; gap: 8px;">
+                                    <select name="availability" class="form-control" style="padding: 4px 10px; font-size: 12px; width: auto; height: 32px;" onchange="this.form.submit()">
+                                        <option value="available" <%= property.availability === 'available' ? 'selected' : '' %>>Available</option>
+                                        <option value="taken" <%= property.availability === 'taken' ? 'selected' : '' %>>Sold / Taken</option>
+                                    </select>
+                                </div>
+                            </form>
+                        <% } else { %>
+                            <!-- Pending staff verification -->
+                            <div style="font-size: 12px; text-align: center; color: var(--color-text-muted); font-style: italic;">
+                                <i class="fas fa-spinner fa-spin"></i> Awaiting M-Pesa approval from support staff.
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+<% } %>
+
+<%- include('../partials/footer') %>

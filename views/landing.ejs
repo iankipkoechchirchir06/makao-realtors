@@ -1,0 +1,198 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<!-- 1. Long Hero Banner with Premium Glassmorphism -->
+<section class="landing-hero" style="border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+    <div class="container" style="position: relative; z-index: 2;">
+        <span class="badge badge-info" style="margin-bottom: 16px; padding: 6px 16px; font-size: 12px; letter-spacing: 1px;">
+            <i class="fas fa-home" style="margin-right: 6px;"></i>Trusted Kenyan housing brokerage
+        </span>
+        <h1 style="max-width: 800px; margin: 0 auto 20px auto; font-size: 44px; font-weight: 800; line-height: 1.2;">
+            Find Your Dream Home with <span style="color: var(--color-primary);">Makao Realtors</span>
+        </h1>
+        <p style="margin-bottom: 36px; font-size: 16px;">
+            Securely connecting Renters & Buyers directly with Landlords & Sellers across Kenya. Paying KES 100 to list, and only a 10% broker fee to connect.
+        </p>
+        
+        <!-- Live Property Filter Form -->
+        <form action="/" method="GET" class="landing-search-bar">
+            <input type="text" name="search" placeholder="Search by city, amenities..." value="<%= search %>" style="flex: 1.5;" />
+            
+            <select name="type">
+                <option value="">All Property Types</option>
+                <option value="apartment" <%= type === 'apartment' ? 'selected' : '' %>>Apartments (Rent)</option>
+                <option value="house" <%= type === 'house' ? 'selected' : '' %>>Houses (Sale)</option>
+            </select>
+            
+            <input type="number" name="price" placeholder="Max Price KES" value="<%= price %>" style="flex: 1;" />
+            
+            <button type="submit" class="btn btn-primary" style="padding: 12px 24px;">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </form>
+    </div>
+</section>
+
+<!-- 2. Active Listings Grid -->
+<section class="landing-section" style="padding-top: 0;">
+    <div class="section-header">
+        <div>
+            <h2>Featured Active Properties</h2>
+            <p>Direct housing brokers with verified landlord and seller records</p>
+        </div>
+        <% if (search || type || price) { %>
+            <a href="/" class="btn btn-secondary btn-sm">Clear Filters</a>
+        <% } %>
+    </div>
+    
+    <% if (listings.length === 0) { %>
+        <div class="glass-panel" style="padding: 60px; text-align: center; border-radius: var(--border-radius-md);">
+            <i class="fas fa-search-minus" style="font-size: 48px; color: var(--color-text-muted); margin-bottom: 16px;"></i>
+            <h3>No Available Listings Found</h3>
+            <p style="color: var(--color-text-secondary); margin-top: 8px;">Try refining your keywords or clearing the search fields.</p>
+        </div>
+    <% } else { %>
+        <div class="properties-grid">
+            <% listings.forEach(property => { %>
+                <div class="property-card glass-panel">
+                    <div class="property-img-container">
+                        <!-- Render elegant gradient fallback if image is mock seeded -->
+                        <% if (property.images && property.images.startsWith('/')) { %>
+                            <img src="<%= property.images %>" alt="<%= property.title %>" onerror="this.src='https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=600&q=80'" />
+                        <% } else { %>
+                            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); display: flex; align-items: center; justify-content: center; color: white;">
+                                <i class="fas fa-image fa-3x"></i>
+                            </div>
+                        <% } %>
+                        <span class="property-badge">
+                            <%= property.property_type === 'apartment' ? 'For Rent' : 'For Sale' %>
+                        </span>
+                        <span class="property-availability <%= property.availability === 'taken' ? 'taken' : '' %>">
+                            <%= property.availability %>
+                        </span>
+                    </div>
+                    
+                    <div class="property-details">
+                        <div class="property-price">
+                            KES <%= parseFloat(property.price).toLocaleString() %>
+                            <span style="font-size: 12px; font-weight: 500; color: var(--color-text-secondary);">
+                                <%= property.property_type === 'apartment' ? '/ month' : 'total price' %>
+                            </span>
+                        </div>
+                        <h3 class="property-title" title="<%= property.title %>"><%= property.title %></h3>
+                        
+                        <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 40px;">
+                            <%= property.description %>
+                        </p>
+                        
+                        <% if (property.amenities) { %>
+                            <div class="property-amenities">
+                                <% property.amenities.split(',').forEach(amenity => { %>
+                                    <span class="amenity-tag"><%= amenity.trim() %></span>
+                                <% }) %>
+                                <% if (property.has_multiple_rooms && property.room_count) { %>
+                                    <span class="amenity-tag" style="background: var(--color-primary-light); color: var(--color-primary); font-weight: 700;">
+                                        <%= property.room_count %> Active Rooms
+                                    </span>
+                                <% } %>
+                            </div>
+                        <% } %>
+                        
+                        <div class="property-actions" style="border-top: 1px solid var(--border-color); padding-top: 15px;">
+                            <div style="font-size: 12px; color: var(--color-text-muted);">
+                                <i class="fas fa-user-circle"></i> <%= property.owner_name %>
+                            </div>
+                            
+                            <!-- Action button switches based on user authentication -->
+                            <% if (user) { %>
+                                <% if (user.role === 'renter' || user.role === 'buyer') { %>
+                                    <a href="/<%= user.role %>/dashboard" class="btn btn-primary btn-sm">
+                                        Connect Details <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                <% } else { %>
+                                    <span class="badge badge-info"><%= user.role %> account</span>
+                                <% } %>
+                            <% } else { %>
+                                <a href="/login" class="btn btn-primary btn-sm">
+                                    Unlock Connection <i class="fas fa-lock"></i>
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</section>
+
+<!-- 3. Dynamic Process Description Section -->
+<section class="landing-section" style="background: var(--bg-surface); border-radius: var(--border-radius-lg); margin-bottom: 40px; padding: 60px;">
+    <div class="landing-section-title">
+        <h2>How Makao Realtors Works</h2>
+        <p>A transparent and secure broker system designed for Kenya's housing market</p>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-item glass-panel">
+            <div class="feature-icon"><i class="fas fa-bullhorn"></i></div>
+            <h3>1. Upload Listing</h3>
+            <p style="font-size: 13px; color: var(--color-text-secondary); margin-top: 8px;">
+                Landlords and Sellers upload amenities and photos (up to 5 maximum). Every listing costs KES 100 to publish. Landlords can register multi-room apartments.
+            </p>
+        </div>
+        
+        <div class="feature-item glass-panel">
+            <div class="feature-icon"><i class="fas fa-file-signature"></i></div>
+            <h3>2. Renter/Buyer Request</h3>
+            <p style="font-size: 13px; color: var(--color-text-secondary); margin-top: 8px;">
+                Renters and Buyers search listings, liking and saving choices. To request landlord details, they check out paying a 10% connection fee securely via M-Pesa.
+            </p>
+        </div>
+        
+        <div class="feature-item glass-panel">
+            <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+            <h3>3. Staff Approve & WhatsApp</h3>
+            <p style="font-size: 13px; color: var(--color-text-secondary); margin-top: 8px;">
+                Upon M-Pesa payment, our backend staff verify and approve the connection. Client gets landlord credentials in their dashboard with preformatted WhatsApp chat hooks.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Premium Customer Testimonials -->
+<section class="landing-section" style="border: none;">
+    <div class="landing-section-title">
+        <h2>Broker Testimonials</h2>
+        <p>Real feedback from homeowners and clients across Nairobi, Mombasa, and Kisumu</p>
+    </div>
+    
+    <div class="testimonials-grid">
+        <div class="testimonial-card glass-panel">
+            <div class="testimonial-text">
+                "Makao Realtors simplified renting for me. I registered as a landlord, paid my KES 100 via M-Pesa, and had my bedsitters filled up in 3 days. Staff approved payments incredibly fast."
+            </div>
+            <div class="testimonial-author">
+                <div class="testimonial-avatar">JK</div>
+                <div>
+                    <h4 style="font-size: 14px;">John Kiprop</h4>
+                    <span style="font-size: 11px; color: var(--color-text-muted);">Landlord, Nairobi West</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="testimonial-card glass-panel">
+            <div class="testimonial-text">
+                "As a buyer, housing brokers always overcharge. Makao charged a flat 10% broker fee. Payment approval was approved within minutes, and I immediately got Sarah's WhatsApp number to finalize the deal."
+            </div>
+            <div class="testimonial-author">
+                <div class="testimonial-avatar">AO</div>
+                <div>
+                    <h4 style="font-size: 14px;">Asha Onyango</h4>
+                    <span style="font-size: 11px; color: var(--color-text-muted);">Buyer, Kisumu</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,57 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Submit House Listing</h2>
+        <p>Register your property for sale. Input house price details and amenities</p>
+    </div>
+    <a href="/seller/dashboard" class="btn btn-secondary btn-sm">
+        <i class="fas fa-arrow-left"></i> Cancel and Go Back
+    </a>
+</div>
+
+<% if (error) { %>
+    <div class="alert alert-danger slide-in-up" style="margin-bottom: 24px;">
+        <span><i class="fas fa-exclamation-circle" style="margin-right: 6px;"></i><%= error %></span>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+<% } %>
+
+<div class="glass-panel" style="padding: 40px; max-width: 800px; margin: 0 auto;">
+    <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        <i class="fas fa-plus-circle" style="color: var(--color-primary); margin-right: 8px;"></i>House Property Details
+    </h3>
+    
+    <form action="/seller/create" method="POST">
+        <div class="form-group">
+            <label for="title" class="form-label">House Title Name</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Elegant 4 Bedroom Villa Karen" required />
+        </div>
+        
+        <div class="form-group">
+            <label for="description" class="form-label">Detailed Description</label>
+            <textarea id="description" name="description" class="form-control" rows="4" placeholder="Mention size of plot, garden features, electric fences, garages, etc..." required style="resize: none;"></textarea>
+        </div>
+        
+        <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
+            <div class="form-group">
+                <label for="price" class="form-label">Total House Sale Price (KES)</label>
+                <input type="number" id="price" name="price" class="form-control" min="1" placeholder="e.g. 25000000" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="amenities" class="form-label">Key Amenities (Comma Separated)</label>
+                <input type="text" id="amenities" name="amenities" class="form-control" placeholder="e.g. Swimming Pool, Garage, Private Garden, Fenced" required />
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); padding-top: 20px; text-align: right;">
+            <button type="submit" class="btn btn-primary" style="padding: 12px 30px;">
+                Submit and Proceed to Payment <i class="fas fa-check-circle"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

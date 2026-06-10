@@ -1,0 +1,63 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Properties Listing Audit</h2>
+        <p>Review and audit all properties submitted by Landlords and Sellers</p>
+    </div>
+    <a href="/admin/dashboard" class="btn btn-secondary btn-sm">
+        <i class="fas fa-arrow-left"></i> Back to Control Center
+    </a>
+</div>
+
+<div class="glass-panel" style="padding: 30px;">
+    <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        <i class="fas fa-home" style="margin-right: 8px; color: var(--color-primary);"></i>System Property Records
+    </h3>
+    
+    <div class="table-wrapper">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Property Title</th>
+                    <th>Price</th>
+                    <th>Type</th>
+                    <th>Broker Mode</th>
+                    <th>Submitted By</th>
+                    <th>Availability</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% listings.forEach(property => { %>
+                    <tr>
+                        <td><%= property.id %></td>
+                        <td><strong><%= property.title %></strong></td>
+                        <td>KES <%= parseFloat(property.price).toLocaleString() %></td>
+                        <td>
+                            <span class="badge badge-info" style="font-size: 10px; font-weight: 700; text-transform: uppercase;">
+                                <%= property.property_type %>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge" style="background: var(--bg-base); color: var(--color-text-primary); font-size: 10px; text-transform: uppercase; font-weight: 700;">
+                                <%= property.role_type %>
+                            </span>
+                        </td>
+                        <td><%= property.owner_name %></td>
+                        <td>
+                            <span class="badge <%= property.availability === 'available' ? 'badge-success' : 'badge-danger' %>">
+                                <%= property.availability %>
+                            </span>
+                        </td>
+                        <td><%= new Date(property.created_at).toLocaleDateString() %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

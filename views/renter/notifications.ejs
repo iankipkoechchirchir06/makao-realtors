@@ -1,0 +1,40 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Announcements Inbox</h2>
+        <p>Stay up to date with broker updates and policy alerts published by administration</p>
+    </div>
+</div>
+
+<div class="glass-panel" style="padding: 30px; max-width: 800px; margin: 0 auto;">
+    <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        <i class="fas fa-bullhorn" style="margin-right: 8px; color: var(--color-primary);"></i>Administrator Bulletins
+    </h3>
+    
+    <% if (broadcasts.length === 0) { %>
+        <div style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+            <i class="fas fa-bell-slash fa-2x" style="margin-bottom: 10px;"></i>
+            <p>No broadcast bulletins are currently in your inbox.</p>
+        </div>
+    <% } else { %>
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <% broadcasts.forEach(alert => { %>
+                <div class="broadcast-card glass-panel" style="border-left: 5px solid var(--color-primary); background: var(--bg-surface); padding: 20px;">
+                    <div class="broadcast-meta" style="display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-secondary); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 12px;">
+                        <span>Broadcast Target: <strong><%= alert.target_role %></strong></span>
+                        <span><%= new Date(alert.created_at).toLocaleString() %></span>
+                    </div>
+                    <h4 style="font-size: 16px; margin-bottom: 8px; color: var(--color-text-primary);"><%= alert.title %></h4>
+                    <p style="font-size: 13.5px; color: var(--color-text-secondary); line-height: 1.6;"><%= alert.message %></p>
+                    <div style="margin-top: 12px; font-size: 11px; color: var(--color-text-muted); text-align: right;">
+                        Dispatched by Admin: <strong><%= alert.sender_name %></strong>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

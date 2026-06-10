@@ -1,0 +1,59 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Connection Payments Log</h2>
+        <p>Track payments of 10% connection fees made to unlock property landlord details</p>
+    </div>
+</div>
+
+<div class="glass-panel" style="padding: 30px;">
+    <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        <i class="fas fa-receipt" style="margin-right: 8px; color: var(--color-primary);"></i>Payment Transaction Log
+    </h3>
+    
+    <% if (payments.length === 0) { %>
+        <div style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+            <i class="fas fa-receipt fa-2x" style="margin-bottom: 10px;"></i>
+            <p>No payment records found under this account.</p>
+        </div>
+    <% } else { %>
+        <div class="table-wrapper">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Receipt Code</th>
+                        <th>Property Title</th>
+                        <th>Connection Fee Paid</th>
+                        <th>Phone Number Used</th>
+                        <th>Payment Status</th>
+                        <th>Transaction Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% payments.forEach(record => { %>
+                        <tr>
+                            <td><code><%= record.mpesa_receipt || 'STK PENDING' %></code></td>
+                            <td><strong><%= record.property_title || 'General Account Setup' %></strong></td>
+                            <td>
+                                <strong style="color: var(--color-primary);">
+                                    KES <%= parseFloat(record.amount).toLocaleString() %>
+                                </strong>
+                            </td>
+                            <td><%= record.phone_number %></td>
+                            <td>
+                                <span class="badge <%= record.status === 'approved' ? 'badge-success' : (record.status === 'pending' ? 'badge-pending' : 'badge-danger') %>">
+                                    <%= record.status %>
+                                </span>
+                            </td>
+                            <td><%= new Date(record.created_at).toLocaleString() %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

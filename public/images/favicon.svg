@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <filter id="subtleShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.15" />
+    </filter>
+  </defs>
+  
+  <!-- Outer glowing background circle for beautiful representation -->
+  <circle cx="50" cy="50" r="48" fill="#f8fafc" stroke="#f1f5f9" stroke-width="2" />
+  
+  <g transform="translate(10, 10)">
+    <!-- House Roof -->
+    <path d="M 40 10 L 70 35 L 58 35 L 40 20 L 22 35 L 10 35 Z" fill="url(#brandGradient)" filter="url(#subtleShadow)" />
+    <!-- Overlapping chevron -->
+    <path d="M 40 28 L 58 43 L 48 43 L 40 36 L 32 43 L 22 43 Z" fill="#06b6d4" opacity="0.85" />
+    <!-- House Columns -->
+    <path d="M 18 48 L 24 48 L 24 75 L 18 75 Z" fill="url(#brandGradient)" />
+    <path d="M 56 48 L 62 48 L 62 75 L 56 75 Z" fill="url(#brandGradient)" />
+    <path d="M 12 78 L 68 78 L 68 83 L 12 83 Z" fill="url(#brandGradient)" />
+  </g>
+</svg>

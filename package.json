@@ -1,0 +1,19 @@
+{
+  "name": "makao-realtors",
+  "version": "1.0.0",
+  "description": "Makao Realtors - Premium Kenyan Housing Broker Web Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "ejs": "^3.1.10",
+    "express": "^4.22.2",
+    "express-session": "^1.19.0",
+    "mysql2": "^3.22.5"
+  },
+  "author": "Ian",
+  "license": "ISC"
+}

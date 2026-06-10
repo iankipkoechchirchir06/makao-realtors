@@ -1,0 +1,94 @@
+<%- include('partials/head') %>
+
+<div class="auth-wrapper">
+    <div class="auth-card glass-panel" style="max-width: 540px; margin-top: 40px; margin-bottom: 40px;">
+        <div class="auth-header">
+            <a href="/">
+                <img src="/images/logo.svg" alt="Makao Logo" class="auth-logo" />
+            </a>
+            <h2>Create an Account</h2>
+            <p>Join Makao Realtors to start secure property brokering</p>
+        </div>
+        
+        <% if (error) { %>
+            <div class="alert alert-danger" style="margin-bottom: 20px; font-size: 13px; padding: 10px 14px;">
+                <span><i class="fas fa-exclamation-circle" style="margin-right: 6px;"></i><%= error %></span>
+            </div>
+        <% } %>
+        
+        <form action="/signup" method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="full_name" class="form-label">Full Name</label>
+                <div style="position: relative; display: flex; align-items: center;">
+                    <i class="fas fa-user" style="position: absolute; left: 16px; color: var(--color-text-muted);"></i>
+                    <input type="text" id="full_name" name="full_name" class="form-control" placeholder="e.g. Kiprono Koech" style="padding-left: 45px;" required />
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone_number" class="form-label">Phone Number</label>
+                <div style="position: relative; display: flex; align-items: center;">
+                    <i class="fas fa-phone" style="position: absolute; left: 16px; color: var(--color-text-muted);"></i>
+                    <input type="text" id="phone_number" name="phone_number" class="form-control" placeholder="e.g. 0712345678" style="padding-left: 45px;" required />
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address (Optional)</label>
+                <div style="position: relative; display: flex; align-items: center;">
+                    <i class="fas fa-envelope" style="position: absolute; left: 16px; color: var(--color-text-muted);"></i>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="e.g. koech@domain.com" style="padding-left: 45px;" />
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="role" class="form-label">Your Role</label>
+                <div style="position: relative; display: flex; align-items: center;">
+                    <i class="fas fa-user-tag" style="position: absolute; left: 16px; color: var(--color-text-muted);"></i>
+                    <select id="role" name="role" class="form-control" style="padding-left: 45px;" required>
+                        <option value="" disabled selected>Select Your Role...</option>
+                        <option value="renter">Renter (Looking for a room/apartment)</option>
+                        <option value="buyer">Buyer (Looking for a house to buy)</option>
+                        <option value="landlord">Landlord (Has rooms/apartments to advertise)</option>
+                        <option value="seller">Seller (Has a house to advertise)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-password-container">
+                    <i class="fas fa-lock" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted);"></i>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Create secure password" style="padding-left: 45px; padding-right: 45px;" required />
+                    <button type="button" class="toggle-password" data-target="password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password" class="form-label">Confirm Password</label>
+                <div class="input-password-container">
+                    <i class="fas fa-shield-alt" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted);"></i>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Re-enter your password" style="padding-left: 45px; padding-right: 45px;" required />
+                    <button type="button" class="toggle-password" data-target="confirm_password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px; padding: 12px 0;">
+                Register Account <i class="fas fa-user-plus"></i>
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Already have an account? <a href="/login" style="font-weight: 700;">Sign In Here</a></p>
+            <p style="margin-top: 15px;"><a href="/" style="color: var(--color-text-muted);"><i class="fas fa-arrow-left"></i> Back to Homepage</a></p>
+        </div>
+    </div>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

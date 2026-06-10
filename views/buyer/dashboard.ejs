@@ -1,0 +1,105 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Find Houses for Sale</h2>
+        <p>Explore luxury villas and standard residential houses. Pay a standard 10% connection fee to unlock homeowner phone and email sign-up details.</p>
+    </div>
+</div>
+
+<% if (listings.length === 0) { %>
+    <div class="glass-panel" style="padding: 60px; text-align: center; border-radius: var(--border-radius-md);">
+        <i class="fas fa-search-minus fa-3x" style="color: var(--color-text-muted); margin-bottom: 16px;"></i>
+        <h3>No Houses listed for Sale</h3>
+        <p style="color: var(--color-text-secondary); margin-top: 8px;">Check back later or contact support to request specific houses.</p>
+    </div>
+<% } else { %>
+    <div class="properties-grid">
+        <% listings.forEach(property => { %>
+            <div class="property-card glass-panel" style="display: flex; flex-direction: column;">
+                <div class="property-img-container">
+                    <img src="<%= property.images %>" alt="<%= property.title %>" onerror="this.src='https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80'" />
+                    <span class="property-badge" style="background: var(--color-primary);">House</span>
+                    <span class="property-availability"><%= property.availability %></span>
+                </div>
+                
+                <div class="property-details" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span class="property-price">KES <%= parseFloat(property.price).toLocaleString() %></span>
+                            
+                            <!-- Interactions forms -->
+                            <div style="display: flex; gap: 10px;">
+                                <form action="/buyer/interactions" method="POST" style="display: inline;">
+                                    <input type="hidden" name="listing_id" value="<%= property.id %>" />
+                                    <input type="hidden" name="interaction_type" value="like" />
+                                    <button type="submit" style="background: none; border: none; cursor: pointer; color: <%= property.is_liked ? 'var(--color-danger)' : 'var(--color-text-muted)' %>; font-size: 18px;">
+                                        <i class="<%= property.is_liked ? 'fas' : 'far' %> fa-heart"></i>
+                                    </button>
+                                </form>
+                                
+                                <form action="/buyer/interactions" method="POST" style="display: inline;">
+                                    <input type="hidden" name="listing_id" value="<%= property.id %>" />
+                                    <input type="hidden" name="interaction_type" value="save" />
+                                    <button type="submit" style="background: none; border: none; cursor: pointer; color: <%= property.is_saved ? 'var(--color-warning)' : 'var(--color-text-muted)' %>; font-size: 18px;">
+                                        <i class="<%= property.is_saved ? 'fas' : 'far' %> fa-bookmark"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <h3 class="property-title" title="<%= property.title %>"><%= property.title %></h3>
+                        <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 15px;"><%= property.description %></p>
+                        
+                        <% if (property.amenities) { %>
+                            <div class="property-amenities" style="margin-bottom: 15px;">
+                                <% property.amenities.split(',').forEach(tag => { %>
+                                    <span class="amenity-tag"><%= tag.trim() %></span>
+                                <% }) %>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <div style="border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 15px;">
+                        <!-- Connection status checkout logic -->
+                        <% if (property.connection_status === 'unpaid') { %>
+                            <% let fee = property.price * 0.10; %>
+                            <div class="glass-panel" style="background: var(--color-primary-light); border-color: var(--color-primary); padding: 12px; border-radius: var(--border-radius-sm);">
+                                <h4 style="font-size: 13px; color: var(--color-primary); margin-bottom: 6px; font-weight: 700;">
+                                    <i class="fas fa-key"></i> Unlock Seller Contact Details
+                                </h4>
+                                <p style="font-size: 11px; color: var(--color-text-secondary); margin-bottom: 10px;">
+                                    Pay 10% Connection Broker Fee: <strong>KES <%= parseFloat(fee).toLocaleString() %></strong> via M-Pesa.
+                                </p>
+                                
+                                <form class="mpesa-checkout-trigger-form">
+                                    <input type="hidden" name="amount" value="<%= fee %>" />
+                                    <input type="hidden" name="payment_type" value="connection_fee" />
+                                    <input type="hidden" name="listing_id" value="<%= property.id %>" />
+                                    
+                                    <div style="display: flex; gap: 8px;">
+                                        <input type="text" name="phone_number" class="form-control form-control-sm" placeholder="Safaricom e.g. 0712345678" style="padding: 6px; font-size: 12px;" value="<%= user.phone_number %>" required />
+                                        <button type="submit" class="btn btn-primary btn-sm" style="padding: 6px 10px; font-size: 11px; white-space: nowrap;">
+                                            Pay 10% Fee
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        <% } else if (property.connection_status === 'pending') { %>
+                            <div class="alert alert-warning" style="margin: 0; padding: 10px; font-size: 12px; text-align: center;">
+                                <span><i class="fas fa-spinner fa-spin" style="margin-right: 6px;"></i> 10% Fee Payment Pending Verification.</span>
+                            </div>
+                        <% } else { %>
+                            <div class="alert alert-success" style="margin: 0; padding: 10px; font-size: 12px; text-align: center;">
+                                <span><i class="fas fa-check-circle" style="margin-right: 6px;"></i> Contact Unlocked! See <strong>Saved/Connected</strong> tab.</span>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+<% } %>
+
+<%- include('../partials/footer') %>

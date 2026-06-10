@@ -1,0 +1,111 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Account Settings</h2>
+        <p>Manage your profile, change passwords, and configure site themes</p>
+    </div>
+</div>
+
+<% if (success) { %>
+    <div class="alert alert-success slide-in-up" style="margin-bottom: 24px;">
+        <span><i class="fas fa-check-circle" style="margin-right: 6px;"></i><%= success %></span>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+<% } %>
+
+<% if (error) { %>
+    <div class="alert alert-danger slide-in-up" style="margin-bottom: 24px;">
+        <span><i class="fas fa-exclamation-circle" style="margin-right: 6px;"></i><%= error %></span>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+<% } %>
+
+<div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
+    
+    <!-- Panel 1: Profile Details Form -->
+    <div class="glass-panel" style="padding: 30px;">
+        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+            <i class="fas fa-user-circle" style="color: var(--color-primary); margin-right: 8px;"></i>Personal Information
+        </h3>
+        
+        <form action="/settings/profile" method="POST">
+            <div class="form-group">
+                <label for="full_name" class="form-label">Full Name</label>
+                <input type="text" id="full_name" name="full_name" class="form-control" value="<%= profile.full_name %>" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="phone_number" class="form-label">Phone Number</label>
+                <input type="text" id="phone_number" name="phone_number" class="form-control" value="<%= profile.phone_number %>" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" value="<%= profile.email || '' %>" placeholder="None configured" />
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Save Profile Details <i class="fas fa-save"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Panel 2: Password Manager & Theme Switcher -->
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+        
+        <!-- Theme Preference Panel -->
+        <div class="glass-panel" style="padding: 24px;">
+            <h3 style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <i class="fas fa-adjust" style="color: var(--color-secondary); margin-right: 8px;"></i>Interface Preferences
+            </h3>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h4 style="font-size: 14px; margin-bottom: 4px;">Dynamic Site Theme</h4>
+                    <p style="font-size: 11px; color: var(--color-text-secondary);">Toggle between clean light mode and premium dark mode</p>
+                </div>
+                
+                <button type="button" class="btn btn-secondary btn-sm" id="theme-toggle" style="display: flex; align-items: center; gap: 8px; font-weight: 700;">
+                    <i class="fas fa-moon"></i> Toggle Contrast Mode
+                </button>
+            </div>
+        </div>
+
+        <!-- Change Password Panel -->
+        <div class="glass-panel" style="padding: 30px;">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <i class="fas fa-key" style="color: var(--color-warning); margin-right: 8px;"></i>Security & Password
+            </h3>
+            
+            <form action="/settings/password" method="POST">
+                <div class="form-group">
+                    <label for="current_password" class="form-label">Current Password</label>
+                    <div class="input-password-container">
+                        <input type="password" id="current_password" name="current_password" class="form-control" required />
+                        <button type="button" class="toggle-password" data-target="current_password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="new_password" class="form-label">New Password</label>
+                    <div class="input-password-container">
+                        <input type="password" id="new_password" name="new_password" class="form-control" required />
+                        <button type="button" class="toggle-password" data-target="new_password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Update Security Password <i class="fas fa-shield-alt"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

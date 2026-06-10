@@ -1,0 +1,78 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Active User Connections</h2>
+        <p>Monitor unlocked connections and dispatch contact details to homeowners and clients</p>
+    </div>
+</div>
+
+<div class="glass-panel" style="padding: 30px;">
+    <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        <i class="fas fa-link" style="margin-right: 8px; color: var(--color-primary);"></i>Connected Client-Owner Pairs
+    </h3>
+    
+    <% if (connections.length === 0) { %>
+        <div style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+            <i class="fas fa-link fa-2x" style="margin-bottom: 10px;"></i>
+            <p>No active renter-landlord or buyer-seller connections have been approved yet.</p>
+        </div>
+    <% } else { %>
+        <div class="table-wrapper">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client (Renter/Buyer)</th>
+                        <th>Homeowner (Landlord/Seller)</th>
+                        <th>Property Details</th>
+                        <th>Receipt Code</th>
+                        <th>Amount Paid</th>
+                        <th style="text-align: right;">Action Alerts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% connections.forEach(pair => { %>
+                        <tr>
+                            <td><%= pair.id %></td>
+                            <td>
+                                <div style="font-weight: 700;"><%= pair.client_name %></div>
+                                <div style="font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase;">
+                                    <%= pair.client_role %> | <%= pair.client_phone %>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 700;"><%= pair.owner_name %></div>
+                                <div style="font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase;">
+                                    Homeowner | <%= pair.owner_phone %>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 600;"><%= pair.listing_title %></div>
+                            </td>
+                            <td><code><%= pair.mpesa_receipt %></code></td>
+                            <td><strong>KES <%= parseFloat(pair.amount_paid).toLocaleString() %></strong></td>
+                            <td style="text-align: right;">
+                                <!-- Pre-formatted WhatsApp API trigger to broker -->
+                                <% 
+                                    let dealMsg = `Hello Makao Realtors! Direct Broker Connection ID #${pair.id} has been successfully verified. \n\n` +
+                                                  `Client Details: ${pair.client_name} (${pair.client_phone}) \n` +
+                                                  `Owner Details: ${pair.owner_name} (${pair.owner_phone}) \n` +
+                                                  `Property Title: ${pair.listing_title} \n` +
+                                                  `M-Pesa Receipt Code: ${pair.mpesa_receipt}`;
+                                    let encodedMsg = encodeURIComponent(dealMsg);
+                                %>
+                                <a href="https://wa.me/25115481162?text=<%= encodedMsg %>" target="_blank" class="btn btn-success btn-sm" style="background-color: #25d366; border-color: #25d366; display: inline-flex; align-items: center; gap: 6px;">
+                                    <i class="fab fa-whatsapp"></i> Notify WhatsApp
+                                </a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

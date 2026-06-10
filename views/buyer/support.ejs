@@ -1,0 +1,54 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Customer Support Desk</h2>
+        <p>Chat directly with support staff and system moderators to solve listing or payment issues</p>
+    </div>
+</div>
+
+<div class="glass-panel chat-window" style="max-width: 900px; margin: 0 auto; height: 550px; border-radius: var(--border-radius-md); overflow: hidden;">
+    <!-- Chat Header -->
+    <div class="chat-header">
+        <div class="chat-user-avatar" style="background: var(--color-secondary);">
+            <i class="fas fa-headset"></i>
+        </div>
+        <div>
+            <h3 style="font-size: 15px;">Makao Help Agent: <%= handler.full_name %></h3>
+            <span style="font-size: 11px; color: var(--color-text-secondary);">Direct support line</span>
+        </div>
+    </div>
+    
+    <!-- Messages Stream -->
+    <div class="chat-messages-area" style="background: var(--bg-base);">
+        <% if (chatMessages.length === 0) { %>
+            <div style="text-align: center; margin: auto; color: var(--color-text-muted); font-size: 13.5px; max-width: 400px;">
+                <i class="fas fa-headset fa-3x" style="margin-bottom: 16px; color: var(--border-color);"></i>
+                <h4>Need assistance with M-Pesa or unlocking property details?</h4>
+                <p style="color: var(--color-text-secondary); margin-top: 6px;">Type a message below to start a chat with our online support team.</p>
+            </div>
+        <% } else { %>
+            <% chatMessages.forEach(msg => { %>
+                <div class="chat-bubble <%= msg.sender_id === user.id ? 'sent' : 'received' %>">
+                    <%= msg.message %>
+                    <span class="chat-time">
+                        <%= new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+                    </span>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+    
+    <!-- Chat input area -->
+    <div class="chat-input-area">
+        <form action="/buyer/support" method="POST" class="chat-input-form">
+            <input type="text" name="message" class="form-control" placeholder="Type support message..." required autocomplete="off" />
+            <button type="submit" class="btn btn-primary" style="padding: 10px 24px;">
+                Send <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

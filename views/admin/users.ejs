@@ -1,0 +1,118 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<div class="section-header">
+    <div>
+        <h2>Internal Support Users</h2>
+        <p>Register new platform staff and administrators to handle support tickets and payments</p>
+    </div>
+    <a href="/admin/dashboard" class="btn btn-secondary btn-sm">
+        <i class="fas fa-arrow-left"></i> Back to Control Center
+    </a>
+</div>
+
+<% if (success) { %>
+    <div class="alert alert-success slide-in-up" style="margin-bottom: 24px;">
+        <span><i class="fas fa-check-circle" style="margin-right: 6px;"></i><%= success %></span>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+<% } %>
+
+<% if (error) { %>
+    <div class="alert alert-danger slide-in-up" style="margin-bottom: 24px;">
+        <span><i class="fas fa-exclamation-circle" style="margin-right: 6px;"></i><%= error %></span>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+<% } %>
+
+<div class="dashboard-grid" style="grid-template-columns: 1.2fr 1.8fr; align-items: start;">
+    
+    <!-- Left Column: Registration form -->
+    <div class="glass-panel" style="padding: 30px;">
+        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+            <i class="fas fa-user-shield" style="color: var(--color-primary); margin-right: 8px;"></i>Register Support User
+        </h3>
+        
+        <form action="/admin/users/create" method="POST">
+            <div class="form-group">
+                <label for="full_name" class="form-label">Full Name</label>
+                <input type="text" id="full_name" name="full_name" class="form-control" placeholder="e.g. Kiprotich Sang" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="phone_number" class="form-label">Phone Number</label>
+                <input type="text" id="phone_number" name="phone_number" class="form-control" placeholder="e.g. 0712345678" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="e.g. sang@makao.co.ke" />
+            </div>
+            
+            <div class="form-group">
+                <label for="role" class="form-label">System Role</label>
+                <select id="role" name="role" class="form-control" required>
+                    <option value="" disabled selected>Choose role...</option>
+                    <option value="staff">Staff (Verify payments, connect clients, chat support)</option>
+                    <option value="admin">Administrator (Manage all resources, broadcasts)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Security Password</label>
+                <div class="input-password-container">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Create password" required />
+                    <button type="button" class="toggle-password" data-target="password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                Create Support Account <i class="fas fa-user-plus"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Right Column: Current internal users list -->
+    <div class="glass-panel" style="padding: 30px;">
+        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+            <i class="fas fa-shield-alt" style="color: var(--color-secondary); margin-right: 8px;"></i>Active Administrators & Staff
+        </h3>
+        
+        <div class="table-wrapper">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(support => { %>
+                        <tr>
+                            <td><%= support.id %></td>
+                            <td><strong><%= support.full_name %></strong></td>
+                            <td><%= support.phone_number %></td>
+                            <td>
+                                <span class="badge badge-info" style="font-size: 10px; font-weight: 700; text-transform: uppercase;">
+                                    <%= support.role %>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge <%= support.status === 'active' ? 'badge-success' : 'badge-danger' %>">
+                                    <%= support.status %>
+                                </span>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
