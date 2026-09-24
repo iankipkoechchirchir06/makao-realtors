@@ -30,7 +30,7 @@ app.set('views', path.join(__dirname, 'views'));
 const dbConfig = {
     host: 'localhost',
     user: 'root',
-    password: 'Kipkoech',
+    password: 'Kipkoech06',
     database: 'makao_db'
 };
 
